@@ -1,2 +1,2 @@
-# react-todo-list
+# react-blog-list
 blog list
