@@ -3,9 +3,30 @@ import React, { useState } from 'react'
 const Queue = () => {
     const [activity, setActivity] = useState('');
     const [list, setList] = useState([]);
+    const [edit, setEdit] = useState({});
 
     const handleSubmit = (event) => {
         event.preventDefault();
+        if (edit.id) {
+            const editedList = {
+                id: edit.id, act: activity
+            }
+
+            const findIndex = list.findIndex((lists) => {
+                return(
+                    lists.id === edit.id
+                )
+            })
+
+            const updatedList = [...list]
+
+            updatedList[findIndex] =  editedList
+            setList(updatedList)
+            setActivity('')
+            console.log(updatedList);
+
+            return
+        }
         return (
             activity === '' ?
                 null
@@ -40,13 +61,9 @@ const Queue = () => {
     }
 
     const editList = (getAct) => {
-        const editFilteredList = list.filter((lists) => {
-            return (
-                lists.act === getAct,
-                setActivity(getAct)
-            )
-        })
-        console.log(editFilteredList);
+        setActivity(getAct.act)
+        setEdit(getAct)
+        // console.log(edit);
     }
 
     const targetActivity = (el) => {
@@ -59,7 +76,7 @@ const Queue = () => {
                 <label className="block">Activity :</label>
                 <input value={activity} onChange={targetActivity} type="text" name="" className="focus:outline-none focus:ring-2 focus:ring-teal-700 placeholder-shown:border-gray-500 p-2 w-full my-2 mt-0 border-solid border-none rounded-md" placeholder="Your Activity ..." />
                 <button htmlFor="my-modal-4" className="text-white bg-green-700 hover:bg-green-800 focus:outline-none font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 mr-2 text-center">
-                    Add
+                    {edit.id ? "Save Changes" : "Add"}
                 </button>
                 <button type="button" onClick={deleteLists} className="text-white bg-red-700 hover:bg-red-800  focus:outline-none font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 mr-2 text-center">Delete All</button>
             </form>
@@ -89,7 +106,7 @@ const Queue = () => {
                                             <td className='whitespace-normal'>{lists.act}</td>
                                             <td className='whitespace-normal'>{lists.id}</td>
                                             <td>
-                                                <button type="submit" onClick={editList.bind(this, lists.act)} className="text-white bg-cyan-700 hover:bg-cyan-800  focus:outline-none font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 mr-2 text-center">Edit</button>
+                                                <button type="submit" onClick={editList.bind(this, lists)} className="text-white bg-cyan-700 hover:bg-cyan-800  focus:outline-none font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 mr-2 text-center">Edit</button>
                                             </td>
                                             <td>
                                                 <button type="button" onClick={removeList.bind(this, lists.id)} className="text-white bg-amber-700 hover:bg-amber-800  focus:outline-none font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 mr-2 text-center">Delete</button>
