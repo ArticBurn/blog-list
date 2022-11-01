@@ -1,2 +1,2 @@
 # react-todo-list
-todo list simple app
+blog list
