@@ -13,18 +13,17 @@ const Queue = () => {
             }
 
             const findIndex = list.findIndex((lists) => {
-                return(
+                return (
                     lists.id === edit.id
                 )
             })
 
             const updatedList = [...list]
 
-            updatedList[findIndex] =  editedList
+            updatedList[findIndex] = editedList
             setList(updatedList)
             setActivity('')
-            console.log(updatedList);
-
+            setEdit({})
             return
         }
         return (
@@ -51,6 +50,8 @@ const Queue = () => {
     }
 
     const removeList = (getId) => {
+        setActivity('')
+        setEdit({})
         const filteredList = list.filter((lists) => {
             return (
                 lists.id !== getId
@@ -66,9 +67,16 @@ const Queue = () => {
         // console.log(edit);
     }
 
+    const cancellist = (getAct) => {
+        setActivity('')
+        setEdit({})
+    }
+
     const targetActivity = (el) => {
         setActivity(el.target.value)
     }
+
+
     return (
         <div className="p-4 w-6/12 h-auto mx-auto mb-8 mt-8 rounded-lg bg-gradient-to-b from-cyan-200 to-green-200 drop-shadow-lg">
             <h1 className="mb-2">TODO list</h1>
@@ -78,7 +86,11 @@ const Queue = () => {
                 <button htmlFor="my-modal-4" className="text-white bg-green-700 hover:bg-green-800 focus:outline-none font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 mr-2 text-center">
                     {edit.id ? "Save Changes" : "Add"}
                 </button>
-                <button type="button" onClick={deleteLists} className="text-white bg-red-700 hover:bg-red-800  focus:outline-none font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 mr-2 text-center">Delete All</button>
+                {
+                    list.length > 0 ? <button type="button" onClick={deleteLists} className="text-white bg-red-700 hover:bg-red-800  focus:outline-none font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center float-right visible">Delete All</button>
+                    :
+                    <button type="button" onClick={deleteLists} className="text-white bg-red-700 hover:bg-red-800  focus:outline-none font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center float-right invisible">Delete All</button>
+                }
             </form>
             <div className="overflow-x-auto bg-white w-full h-auto my-4 rounded-md">
                 <table className='table table-zebra w-full'>
@@ -94,10 +106,7 @@ const Queue = () => {
                         {
                             list.length === 0 ?
                                 <tr>
-                                    <td className='whitespace-normal text-center italic' colSpan={3}>No activity in list</td>
-                                    <td>
-                                        <label htmlFor="my-modal-4" className="btn">open modal</label>
-                                    </td>
+                                    <td className='whitespace-normal text-center italic' colSpan={4}>No activity in list</td>
                                 </tr> :
                                 list.map((lists, index) => {
                                     return (
@@ -106,7 +115,13 @@ const Queue = () => {
                                             <td className='whitespace-normal'>{lists.act}</td>
                                             <td className='whitespace-normal'>{lists.id}</td>
                                             <td>
-                                                <button type="submit" onClick={editList.bind(this, lists)} className="text-white bg-cyan-700 hover:bg-cyan-800  focus:outline-none font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 mr-2 text-center">Edit</button>
+                                                {
+                                                    edit.id ? 
+                                                    <button type="submit" onClick={cancellist.bind(this, lists)} className="text-white bg-cyan-700 hover:bg-cyan-800  focus:outline-none font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 mr-2 text-center">Cancel</button>
+                                                    :
+                                                    <button type="submit" onClick={editList.bind(this, lists)} className="text-white bg-cyan-700 hover:bg-cyan-800  focus:outline-none font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 mr-2 text-center">Edit</button>
+                                                }
+                                                
                                             </td>
                                             <td>
                                                 <button type="button" onClick={removeList.bind(this, lists.id)} className="text-white bg-amber-700 hover:bg-amber-800  focus:outline-none font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 mr-2 text-center">Delete</button>
