@@ -1,7 +1,9 @@
-import React, { useState } from 'react'
+import React, { useState,useRef } from 'react'
 
 const Queue = () => {
+    const checkBoxRef = useRef(null);
     const [activity, setActivity] = useState('');
+    const [_status, setStatus] = useState(false);
     const [list, setList] = useState([]);
     const [edit, setEdit] = useState({});
 
@@ -9,7 +11,7 @@ const Queue = () => {
         event.preventDefault();
         if (edit.id) {
             const editedList = {
-                id: edit.id, act: activity
+                id: edit.id, act: activity, status: _status
             }
 
             const findIndex = list.findIndex((lists) => {
@@ -32,9 +34,11 @@ const Queue = () => {
                 :
                 setList([...list, {
                     id: generateId(),
-                    act: activity
+                    act: activity,
+                    status: _status
                 }]),
             setActivity('')
+            , <>{console.log(list)}</>
         )
         // console.log(list);
     }
@@ -76,9 +80,39 @@ const Queue = () => {
         setActivity(el.target.value)
     }
 
+    const checkHandle = (getStatus) => {
+        const statusList = {
+            id: getStatus.id, act: getStatus.act, status: _status
+        }
+
+        const currentStatus = list.findIndex((lists) => {
+            return (
+                lists.id === getStatus.id
+            )
+        })
+
+        // if (!_status === false) {
+        //     console.log(statusList);
+        // } else {
+        //     console.log(statusList);
+        // }
+
+        const updatedStatus = [...list]
+
+        updatedStatus[currentStatus] = statusList
+        setList(updatedStatus)
+        setActivity('')
+        setEdit({})
+
+        console.log(list);
+    }
+
+    const targetChecked = (el) => {
+        setStatus(el.target.checked)
+    }
 
     return (
-        <div className="p-4 w-6/12 h-auto mx-auto mb-8 mt-8 rounded-lg bg-gradient-to-b from-cyan-200 to-green-200 drop-shadow-lg">
+        <div className="p-4 w-10/12 h-auto mx-auto mb-8 mt-8 rounded-lg bg-gradient-to-b from-cyan-200 to-green-200 drop-shadow-lg">
             <h1 className="mb-2">TODO list</h1>
             <form onSubmit={handleSubmit}>
                 <label className="block">Activity :</label>
@@ -88,8 +122,8 @@ const Queue = () => {
                 </button>
                 {
                     list.length > 0 ? <button type="button" onClick={deleteLists} className="text-white bg-red-700 hover:bg-red-800  focus:outline-none font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center float-right visible">Delete All</button>
-                    :
-                    <button type="button" onClick={deleteLists} className="text-white bg-red-700 hover:bg-red-800  focus:outline-none font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center float-right invisible">Delete All</button>
+                        :
+                        <button type="button" onClick={deleteLists} className="text-white bg-red-700 hover:bg-red-800  focus:outline-none font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center float-right invisible">Delete All</button>
                 }
             </form>
             <div className="overflow-x-auto bg-white w-full h-auto my-4 rounded-md">
@@ -99,7 +133,8 @@ const Queue = () => {
                             <th className='w-1/12 text-center'>No.</th>
                             <th className='w-6/12'>Activity</th>
                             <th className='w-3/12'>Id</th>
-                            <th className='w-2/12 text-center' colSpan={2}>Action</th>
+                            <th className='w-1/12 text-center' colSpan={3}>Action</th>
+                            <th className='w-1/12'>Status</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -111,20 +146,28 @@ const Queue = () => {
                                 list.map((lists, index) => {
                                     return (
                                         <tr className='hover' key={lists.id}>
-                                            <th className='text-center'>{index + 1}</th>
+                                            <th className='text-center'>{index + 1}.</th>
                                             <td className='whitespace-normal'>{lists.act}</td>
                                             <td className='whitespace-normal'>{lists.id}</td>
                                             <td>
                                                 {
-                                                    edit.id ? 
-                                                    <button type="submit" onClick={cancellist.bind(this, lists)} className="text-white bg-cyan-700 hover:bg-cyan-800  focus:outline-none font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 mr-2 text-center">Cancel</button>
-                                                    :
-                                                    <button type="submit" onClick={editList.bind(this, lists)} className="text-white bg-cyan-700 hover:bg-cyan-800  focus:outline-none font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 mr-2 text-center">Edit</button>
+                                                    edit.id ?
+                                                        <button type="submit" onClick={cancellist.bind(this, lists)} className="text-white bg-cyan-700 hover:bg-cyan-800  focus:outline-none font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 mr-2 text-center">Cancel</button>
+                                                        :
+                                                        <button type="submit" onClick={editList.bind(this, lists)} className="text-white bg-cyan-700 hover:bg-cyan-800  focus:outline-none font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 mr-2 text-center">Edit</button>
                                                 }
-                                                
+
                                             </td>
                                             <td>
                                                 <button type="button" onClick={removeList.bind(this, lists.id)} className="text-white bg-amber-700 hover:bg-amber-800  focus:outline-none font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 mr-2 text-center">Delete</button>
+                                            </td>
+                                            <td>
+                                                <input ref={checkBoxRef} type="checkbox" onClick={checkHandle.bind(this, lists)} onChange={targetChecked}/>
+                                            </td>
+                                            <td>
+                                                {
+                                                    list.status === false ? <>'Fff'</> : <>TTT</>
+                                                }
                                             </td>
                                         </tr>
                                     )
