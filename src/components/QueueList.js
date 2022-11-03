@@ -87,15 +87,15 @@ const Queue = () => {
 
         const currentStatus = list.findIndex((lists) => {
             return (
-                lists.id === getStatus.id
+                getStatus.id === list.id
             )
         })
 
-        // if (!_status === false) {
-        //     console.log(statusList);
-        // } else {
-        //     console.log(statusList);
-        // }
+        if (_status === false) {
+            console.log(statusList);
+        } else {
+            console.log(statusList);
+        }
 
         const updatedStatus = [...list]
 
