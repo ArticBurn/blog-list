@@ -1,17 +1,22 @@
-import React, { useState,useRef } from 'react'
+import React, { useState } from 'react'
 
 const Queue = () => {
-    const checkBoxRef = useRef(null);
     const [activity, setActivity] = useState('');
-    const [_status, setStatus] = useState(false);
+    const [notif, setNotif] = useState('');
     const [list, setList] = useState([]);
     const [edit, setEdit] = useState({});
 
     const handleSubmit = (event) => {
         event.preventDefault();
+        if (!activity) {
+            return (
+                setNotif('Activity not empty!')
+            )
+        }
         if (edit.id) {
             const editedList = {
-                id: edit.id, act: activity, status: _status
+                ...edit,
+                act: activity
             }
 
             const findIndex = list.findIndex((lists) => {
@@ -26,19 +31,16 @@ const Queue = () => {
             setList(updatedList)
             setActivity('')
             setEdit({})
-            return
         }
         return (
-            activity === '' ?
-                null
-                :
-                setList([...list, {
-                    id: generateId(),
-                    act: activity,
-                    status: _status
-                }]),
-            setActivity('')
-            , <>{console.log(list)}</>
+            setList([...list, {
+                id: generateId(),
+                act: activity,
+                status: false
+            }]),
+            setActivity(''),
+            setNotif('')
+            //  , <>{console.log(list)}</>
         )
         // console.log(list);
     }
@@ -80,40 +82,31 @@ const Queue = () => {
         setActivity(el.target.value)
     }
 
-    const checkHandle = (getStatus) => {
-        const statusList = {
-            id: getStatus.id, act: getStatus.act, status: _status
+    const targetChecked = (getStatus) => {
+        const statusChecked = {
+            id: getStatus.id,
+            act: getStatus.act,
+            status: getStatus.status ? false : true
         }
 
-        const currentStatus = list.findIndex((lists) => {
+        const statusIndex = list.findIndex((lists) => {
             return (
-                getStatus.id === list.id
+                lists.id === getStatus.id
             )
         })
 
-        if (_status === false) {
-            console.log(statusList);
-        } else {
-            console.log(statusList);
-        }
+        const statusList = [...list]
+        statusList[statusIndex] = statusChecked
 
-        const updatedStatus = [...list]
-
-        updatedStatus[currentStatus] = statusList
-        setList(updatedStatus)
-        setActivity('')
-        setEdit({})
-
-        console.log(list);
-    }
-
-    const targetChecked = (el) => {
-        setStatus(el.target.checked)
+        setList(statusList)
+        console.log(statusList);
     }
 
     return (
         <div className="p-4 w-10/12 h-auto mx-auto mb-8 mt-8 rounded-lg bg-gradient-to-b from-cyan-200 to-green-200 drop-shadow-lg">
-            <h1 className="mb-2">TODO list</h1>
+            <h1 className="mb-2">TODO list {
+                <span className='text-red-600'>{notif}</span>
+            }</h1>
             <form onSubmit={handleSubmit}>
                 <label className="block">Activity :</label>
                 <input value={activity} onChange={targetActivity} type="text" name="" className="focus:outline-none focus:ring-2 focus:ring-teal-700 placeholder-shown:border-gray-500 p-2 w-full my-2 mt-0 border-solid border-none rounded-md" placeholder="Your Activity ..." />
@@ -162,11 +155,17 @@ const Queue = () => {
                                                 <button type="button" onClick={removeList.bind(this, lists.id)} className="text-white bg-amber-700 hover:bg-amber-800  focus:outline-none font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 mr-2 text-center">Delete</button>
                                             </td>
                                             <td>
-                                                <input ref={checkBoxRef} type="checkbox" onClick={checkHandle.bind(this, lists)} onChange={targetChecked}/>
-                                            </td>
-                                            <td>
                                                 {
-                                                    list.status === false ? <>'Fff'</> : <>TTT</>
+                                                    edit.id ?
+                                                        <input className='invisible' type="checkbox" checked={lists.status} onChange={targetChecked.bind(this, lists)} />
+                                                        :
+                                                        <input className='visible' type="checkbox" checked={lists.status} onChange={targetChecked.bind(this, lists)} />
+                                                }
+
+                                            </td>
+                                            <td className=' '>
+                                                {
+                                                    lists.status ? 'Finished' : 'Not finished yet'
                                                 }
                                             </td>
                                         </tr>
