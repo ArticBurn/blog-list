@@ -1,13 +1,34 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
+import {createBrowserRouter, RouterProvider, Route} from 'react-router-dom'
 import './index.css';
-import App from './App';
+// import App from './App';
 import reportWebVitals from './reportWebVitals';
+
+import Root, {loader as rootLoader} from './routes/Root';
+import Contact from './routes/Contact';
+import ErrorPage from './components/ErrorPage';
+
+const router = createBrowserRouter([
+  {
+    path : '/',
+    element : <Root />,
+    errorElement: <ErrorPage />,
+    loader: rootLoader,
+    children: [
+      {
+        path: 'contacts/:contactId',
+        element: <Contact />
+      }
+    ]
+  },
+])
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <App />
+    <RouterProvider router={router}/>
+    {/* <App /> */}
   </React.StrictMode>
 );
 

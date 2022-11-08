@@ -5,22 +5,25 @@
 // import Modal from './components/Modal.js'
 // import Tick from './components/Tick'
 // import List from './components/List'
-import Counter from './components/Counter.js'
+// import Counter from './components/Counter.js'
+import TestRoute from "./routes/TestRoute";
 
-function App() {
-  return (
-    <div>
-      <Counter />
-      {/* <Modal /> */}
-      {/* <Queue /> */}
-      {/* <Notifaction /> */}
-      {/* <Notifaction />
+  function App() {
+
+    return (
+      <div>
+        <TestRoute />
+        {/* <Counter /> */}
+        {/* <Modal /> */}
+        {/* <Queue /> */}
+        {/* <Notifaction /> */}
+        {/* <Notifaction />
       <Tick />
       <List /> */}
-      {/* <Form /> */}
-      {/* <Fetching /> */}
-    </div>
-  );
-}
+        {/* <Form /> */}
+        {/* <Fetching /> */}
+      </div>
+    );
+  }
 
 export default App;
