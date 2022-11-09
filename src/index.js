@@ -5,9 +5,10 @@ import './index.css';
 // import App from './App';
 import reportWebVitals from './reportWebVitals';
 
-import Root, {loader as rootLoader} from './routes/Root';
-import Contact from './routes/Contact';
+import Root, {loader as rootLoader, action as rootAction} from './routes/Root';
+import Contact, {loader as contactLoader} from './routes/Contact';
 import ErrorPage from './components/ErrorPage';
+import EditContact, { action as editAction } from './routes/EditContact';
 
 const router = createBrowserRouter([
   {
@@ -15,10 +16,18 @@ const router = createBrowserRouter([
     element : <Root />,
     errorElement: <ErrorPage />,
     loader: rootLoader,
+    action: rootAction,
     children: [
       {
         path: 'contacts/:contactId',
-        element: <Contact />
+        element: <Contact />,
+        loader: contactLoader,
+      },
+      {
+        path: 'contacts/:contactId/edit',
+        element: <EditContact />,
+        loader: contactLoader,
+        action: editAction,
       }
     ]
   },
